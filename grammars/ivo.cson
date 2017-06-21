@@ -1,0 +1,417 @@
+'fileTypes': [
+  'ivo'
+]
+'firstLineMatch': '^#!/.*\\b\\w*ivo\\b'
+'foldingStartMarker': '/\\*\\*|\\{\\s*$'
+'foldingStopMarker': '\\*\\*/|^\\s*\\}'
+'name': 'Ivo'
+'patterns': [
+  {
+    'include': '#interpolations'
+  }
+  {
+    'include': '#code'
+  }
+]
+'repository':
+  'block-comments':
+    'begin': '/\\*'
+    'end': '\\*/'
+    'name': 'comment.block.ivo'
+    'patterns': [
+      {
+        'include': '#block-comments'
+      }
+      {
+        'match': '(?x)\n\t\t\t(?! /\\*)\n\t\t\t(?! \\*/)\n\t\t  '
+      }
+    ]
+  'char-literal':
+    'begin': '\''
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.character.begin.ivo'
+    'end': '\'(?!\')'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.character.end.ivo'
+    'name': 'constant.character.literal.ivo'
+    'patterns': [
+      {
+        'match': '\\\\(?:[btnfr\\\\"\']|[0-7]{1,3}|u[0-9A-Fa-f]{4})'
+        'name': 'constant.character.escape.ivo'
+      }
+      {
+        'match': '\\\\.'
+        'name': 'invalid.illegal.unrecognized-character-escape.ivo'
+      }
+      {
+        'match': '[^\']{2,}'
+        'name': 'invalid.illegal.character-literal-too-long'
+      }
+      {
+        'match': '(?<!\')[^\']'
+        'name': 'invalid.illegal.character-literal-too-long'
+      }
+    ]
+  'interpolation-expression' :
+    'patterns': [
+      {
+        'name': 'source.embedded.ivo'
+        'begin': '(\\$\\{)'
+        'patterns': [
+          { 'include': '$self' }
+        ]
+        'end': '(\\})'
+        'captures':
+          '0':
+            'name': 'punctuation.section.embedded.ivo'
+      }
+      {
+        'name': 'source.embedded.ivo'
+        'match': '(\\$)\\w+'
+        'captures':
+          '1':
+            'name': 'punctuation.section.embedded.ivo'
+      }
+    ]
+  'interpolations':
+    'patterns': [
+      {
+        'name': 'string.quoted.triple.ivo'
+        'begin': '\\w+"""'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.string.begin.ivo'
+        'end': '"""(?!")'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.string.end.ivo'
+        'patterns': [
+          { 'include': '#interpolation-expression' }
+        ]
+      }
+      {
+        'name': "string.quoted.double.ivo"
+        'begin': '\\w+"'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.string.begin.ivo'
+        'end': '"'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.string.end.ivo'
+        'patterns': [
+          { 'include': '#interpolation-expression' }
+        ]
+      }
+    ]
+  'code':
+    'patterns': [
+      {
+        'include': '#declarations'
+      }
+      {
+        'include': '#inheritance'
+      }
+      {
+        'include': '#imports'
+      }
+      {
+        'include': '#comments'
+      }
+      {
+        'include': '#block-comments'
+      }
+      {
+        'include': '#strings'
+      }
+      {
+        'include': '#initialization'
+      }
+      {
+        'include': '#keywords'
+      }
+      {
+        'include': '#constants'
+      }
+      {
+        'include': '#char-literal'
+      }
+      {
+        'include': '#empty-parentheses'
+      }
+      {
+        'include': '#parameter-list'
+      }
+      {
+        'include': '#qualifiedClassName'
+      }
+      {
+        'include': '#meta-brackets'
+      }
+      {
+        'include': '#meta-bounds'
+      }
+      {
+        'include': '#meta-colons'
+      }
+    ]
+  'comments':
+    'patterns': [
+      {
+        'captures':
+          '0':
+            'name': 'punctuation.definition.comment.ivo'
+        'match': '/\\*\\*/'
+        'name': 'comment.block.empty.ivo'
+      }
+      {
+        'begin': '/\\*'
+        'captures':
+          '0':
+            'name': 'punctuation.definition.comment.ivo'
+        'end': '\\*/'
+        'name': 'comment.block.ivo'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'comment.line.double-slash.ivo'
+          '2':
+            'name': 'punctuation.definition.comment.ivo'
+        'match': '\\s*((//).*$)'
+      }
+    ]
+  'constants':
+    'patterns': [
+      {
+        'match': '\\b(nil|False|True|Nil|None)\\b'
+        'name': 'constant.language.ivo'
+      }
+      {
+        'match': '\\b((0(x|X|b|B)[0-9a-fA-F_]*)|(([0-9_]+\\.?[0-9_]*)|(\\.[0-9_]+))((e|E)(\\+|-)?[0-9]+)?)(_?[iu#](8|16|32|64)?)?\\b'
+        'name': 'constant.numeric.ivo'
+      }
+      {
+        'match': '\\b(this)\\b'
+        'name': 'variable.language.ivo'
+      }
+      {
+        'match': '\\b(Boolean|Int8|Nat8|Int16|Nat16|Int32|Nat32|Int64|Nat64|Int|Nat|Rat|Float32|Float64|Char|List|Maybe)\\b'
+        'name': 'storage.type.ivo'
+      }
+    ]
+  'declarations':
+    'patterns': [
+      {
+        'captures':
+          '1':
+            'name': 'keyword.declaration.ivo'
+          '2':
+            'name': 'entity.name.function.declaration'
+        'match': '(?x)\n\t\t\t\t\t\t\\b(def|var)\\s+\n\t\t\t\t\t\t([_$\\p{L}][_$\\p{L}0-9]*(?:_[^\\s])(?=[(\\t ])|[_$\\p{L}][_$\\p{L}0-9]*|[-?~><^+*%:!#|/@\\\\]+)+'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'keyword.declaration.ivo'
+          '2':
+            'name': 'keyword.declaration.ivo'
+          '3':
+            'name': 'entity.name.module.declaration'
+        'match': '\\b(module|trait|data|class)\\s+([^\\s\\{\\(\\[]+)'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'keyword.declaration.ivo'
+          '2':
+            'name': 'entity.name.type.declaration'
+        'match': '\\b(type)\\s+(`[^`]+`|[_$\\p{L}][_$a-z\\p{L}]*(?:_[^\\s])(?=[\\t ])|[_$\\p{L}][_$\\p{L}0-9]*|[-?~><^+*%:!#|/@\\\\]+)'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'keyword.declaration.stable.ivo'
+          '2':
+            'name': 'keyword.declaration.volatile.ivo'
+          '3':
+            'name': 'entity.name.val.declaration'
+        'match': '\\b(?:(let)|(var))\\s+(?:(`[^`]+`|[_$\\p{L}][_$\\p{L}0-9]*(?:_[^\\s])(?=[\\t ])|[_$\\p{L}][_$\\p{L}0-9]*|[-?~><^+*%:!#|/@\\\\]+)|(?=\\())'
+      }
+    ]
+  'empty-parentheses':
+    'captures':
+      '1':
+        'name': 'meta.bracket.ivo'
+    'match': '(\\(\\))'
+    'name': 'meta.parentheses.ivo'
+  'imports':
+    'begin': '\\b(import|export)\\s+'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.other.import.ivo'
+    'end': '([\\n;]+)'
+    'name': 'meta.import.ivo'
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'match': '(\\b(nil)\\.\\s*)?'
+        'name': 'constant.language.ivo'
+      }
+      {
+        'match': '([^\\s{;.]+)\\s*\\.\\s*'
+        'name': 'variable.package.ivo'
+      }
+      {
+        'match': '([^\\s{;.]+)\\s*[._]'
+        'name': 'variable.import.ivo'
+      }
+      {
+        'begin': '{'
+        'beginCaptures':
+          '0':
+            'name': 'meta.bracket.ivo'
+        'end': '}'
+        'endCaptures':
+          '0':
+            'name': 'meta.bracket.ivo'
+        'name': 'meta.import.selector.ivo'
+        'patterns': [
+          {
+            'captures':
+              '1':
+                'name': 'variable.import.renamed-from.ivo'
+              '2':
+                'name': 'keyword.other.arrow.ivo'
+              '3':
+                'name': 'variable.import.renamed-to.ivo'
+            'match': '(?x) \\s*\n\t\t\t\t([^\\s.,}]+) \\s*\n\t\t\t\t(->) \\s*\n\t\t\t\t([^\\s.,}]+) \\s*\n\t\t\t  '
+          }
+          {
+            'match': '([^\\s.,}]+)'
+            'name': 'variable.import.ivo'
+          }
+        ]
+      }
+    ]
+  'inheritance':
+    'patterns': [
+      {
+        'captures':
+          '1':
+            'name': 'keyword.declaration.ivo'
+          '2':
+            'name': 'entity.other.inherited-class.ivo'
+        'match': '(:)\\s+([^\\s\\{\\(\\[\\]]+)'
+      }
+    ]
+  'keywords':
+    'patterns': [
+      {
+        'match': '\\b(return|throw)\\b'
+        'name': 'keyword.control.flow.jump.ivo'
+      }
+      {
+        'match': '\\b(else|if|then|do|while|repeat|for|match|with|case)\\b'
+        'name': 'keyword.control.flow.ivo'
+      }
+      {
+        'match': '\\b(catch|finally|try)\\b'
+        'name': 'keyword.control.exception.ivo'
+      }
+      {
+        'match': '(<-|←|->|→|=>|⇒|~>|\\?|\\:+|@|\\|)+'
+        'name': 'keyword.operator.ivo'
+      }
+      {
+        'match': '(==?|!=|<=|>=|<>|<|>)'
+        'name': 'keyword.operator.comparison.ivo'
+      }
+      {
+        'match': '(\\-|\\+|\\*|/(?![/*])|%|~)'
+        'name': 'keyword.operator.arithmetic.ivo'
+      }
+      {
+        'match': '(!|&&|\\|\\|)'
+        'name': 'keyword.operator.logical.ivo'
+      }
+    ]
+  'meta-brackets':
+    'comment': 'For themes: Brackets look nice when colored.'
+    'patterns': [
+      {
+        'match': '{|}|\\(|\\)'
+        'name': 'meta.bracket.ivo'
+      }
+    ]
+  'meta-colons':
+    'comment': 'For themes: Matching type colons'
+    'patterns': [
+      {
+        'match': '(?<!:):(?!:)'
+        'name': 'meta.colon.ivo'
+      }
+    ]
+  'parameter-list':
+    'patterns': [
+      {
+        'captures':
+          '1':
+            'name': 'variable.parameter.ivo'
+          '2':
+            'name': 'meta.colon.ivo'
+        'comment': 'We do not match param names that start with a Capital letter'
+        'match': '(?<=[^\\._$\\p{L}0-9])(`[^`]+`|[_$\\p{Ll}][_$\\p{L}0-9]*(?:_[^\\s])(?=[\\t ])|[_$\\p{Ll}][_$\\p{L}0-9]*|[-?~><^+*%:!#|/@\\\\]+)\\s*(:)\\s+'
+      }
+    ]
+  'qualifiedClassName':
+    'captures':
+      '1':
+        'name': 'entity.name.class'
+    'match': '(\\b([A-Z][\\w\']*))'
+  'strings':
+    'patterns': [
+      {
+        'begin': '"""'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.string.begin.ivo'
+        'end': '"""(?!")'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.string.end.ivo'
+        'name': 'string.quoted.triple.ivo'
+        'patterns': [
+          {
+            'match': '\\\\\\\\|\\\\u[0-9A-Fa-f]{4}'
+            'name': 'constant.character.escape.ivo'
+          }
+        ]
+      }
+      {
+        'begin': '"'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.string.begin.ivo'
+        'end': '"'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.string.end.ivo'
+        'name': 'string.quoted.double.ivo'
+        'patterns': [
+          {
+            'match': '\\\\(?:[btnfr\\\\"\']|[0-7]{1,3}|u[0-9A-Fa-f]{4})'
+            'name': 'constant.character.escape.ivo'
+          }
+          {
+            'match': '\\\\.'
+            'name': 'invalid.illegal.unrecognized-string-escape.ivo'
+          }
+        ]
+      }
+    ]
+'scopeName': 'source.ivo'

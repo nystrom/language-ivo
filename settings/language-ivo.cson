@@ -1,0 +1,5 @@
+'.source.ivo':
+  'editor':
+    'increaseIndentPattern': '(^.*(\\{[^}]*|\\([^)]*)$|^.*\\=\\s*$)'
+    'decreaseIndentPattern': '^\\s*(\\}|\\))'
+    'commentStart': '// '

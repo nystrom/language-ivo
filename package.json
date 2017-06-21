@@ -1,0 +1,14 @@
+{
+  "name": "language-ivo",
+  "version": "0.1.1",
+  "description": "Ivo language support in Atom",
+  "repository": "https://github.com/nystrom/language-ivo",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "bugs": {
+    "url": "https://github.com/nystrom/language-ivo/issues"
+  },
+  "dependencies": {}
+}
